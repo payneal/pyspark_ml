@@ -1,0 +1,27 @@
+# Linnear regression
+
+## 1: Least squares method
+* minimizing the sum of squares of the residuals
+* residual for an observation is the difference between the observation(y-vaalue) and teh fitted line
+
+### regression evaluation
+
+#### Mean Absolute Error
+* this is the mean of the absolue value of  errors
+* easy to understand, just average error
+
+#### Mean Squared Error 
+* this is themean of the squared  errors
+* larger errors are noted more than with ma, making MSE more popular
+
+#### Root Mean Square Error
+* this is the root of the mean of the squared errors
+*  most popular(has  same units as y)
+
+#### R Squared Values
+* also known as the coefficient of determination
+* not quite an error metric, more of a statical measure of your regression model
+* by itself it wont tell you the whole story
+* its a measure of how much variance your model accounts for
+* between 0-1(o% to 100%)
+*  there are also different ways of obtaining r^2 such as adjusted R squared
