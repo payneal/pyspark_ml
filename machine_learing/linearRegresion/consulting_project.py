@@ -17,8 +17,12 @@ from pyspark.ml.feature import StringIndexer
 from pyspark.ml.linalg import Vectors
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.regression import  LinearRegression
+from pyspark.sql.functions import corr
 
+# get spark context
 spark = SparkSession.builder.appName('cruise').getOrCreate()
+
+# read  in data
 df = spark.read.csv('./data/cruise_ship_info.csv', inferSchema=True, header=True)
 
 print "show the schema"
@@ -29,21 +33,22 @@ for ship in df.head(5):
     print ship
     print ""
 
-print "see how "
+print "see how how many type of cruise lines there are"
 df.groupBy("Cruise_line").count().show()
 
 
-# give  the individual names
+# turn a sting to a idx that connects to cruise line
 indexed = StringIndexer(inputCol="Cruise_line", outputCol='cruise_category')
 indexed = indexed.fit(df).transform(df)
-indexed.head(3)
 
+# show the top 3 entrires
+indexed.head(3)
 print "this is the columns: {}".format(indexed.columns)
 
-assembler = VectorAssembler(inputCols= ['Age', 'Tonnage', 'passengers', 'length', 'cabins', 'passenger_density', 'crew', 'cruise_category'], outputCol ='features')
+
+assembler = VectorAssembler(inputCols= ['Age', 'Tonnage', 'passengers', 'length', 'cabins', 'passenger_density', 'cruise_category'], outputCol ='features')
 
 output  = assembler.transform(indexed)
-
 
 output.select('features', 'crew').show()
 
@@ -66,14 +71,11 @@ print "show root meansquared eerror: {}".format(ship_results.rootMeanSquaredErro
 train_data.describe().show()
 
 print "show this is r^2: {}".format(ship_results.r2 )
-
-print "this is ship results"ship_results.residual)
-
-# print "showing final data: "
-# final_data.describe().show()
-
-# @ section 11, lecture 39 and 13:12
+print "this is ship results mean absolute error: {}".format(ship_results.meanAbsoluteError)
 
 
+print "checking to see if crew and passengers is related"
+df.select(corr('crew', 'passengers')).show()
 
-
+print "checing if crew and cabins is related or coorelated"
+df.select(corr('crew', 'cabins')).show()
